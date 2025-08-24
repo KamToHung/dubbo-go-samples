@@ -65,6 +65,13 @@ jobs:
         with:
           mode: check
 
+      - name: Restore Go version after license check
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go_version }}
+          cache: true
+          cache-dependency-path: go.sum
+
       - name: Check Go version
         run: |
           go version
