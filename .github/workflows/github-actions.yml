@@ -65,6 +65,10 @@ jobs:
         with:
           mode: check
 
+      - name: Check Go version
+        run: |
+          go version
+
       - name: Switch Dubbo-go version
         run: |
           set -e  # 遇到错误立即退出
