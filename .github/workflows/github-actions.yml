@@ -31,7 +31,7 @@ jobs:
         uses: actions/checkout@v4.0.0
 
       - name: Set up Go ${{ matrix.go_version }}
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v4
         with:
           go-version: ${{ matrix.go_version }}
         id: go
@@ -62,7 +62,7 @@ jobs:
         uses: apache/skywalking-eyes/header@e1a02359b239bd28de3f6d35fdc870250fa513d5
 
       - name: Set Go version again to override skywalking
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v4
         with:
           go-version: ${{ matrix.go_version }}
 
