@@ -11,6 +11,7 @@ on:
       - "*"
 
 jobs:
+
   build:
     name: ${{ matrix.os }} - Go ${{ matrix.go_version }}
     runs-on: ${{ matrix.os }}
@@ -21,21 +22,20 @@ jobs:
           - '1.23'
         os:
           - ubuntu-latest
-          # - macos-latest  # 可选：添加macOS测试
-          # - windows-latest  # 可选：添加Windows测试
 
     env:
       DING_TOKEN: ${{ secrets.DING_TOKEN }}
       DING_SIGN: ${{ secrets.DING_SIGN }}
 
     steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-
-      - name: Set up Go ${{ matrix.go_version }}
-        uses: actions/setup-go@v5
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go_version }}
+        id: go
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v4.0.0
 
       - name: Cache dependencies
         uses: actions/cache@v4
@@ -48,9 +48,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-${{ matrix.go_version }}-
 
-      - name: Verify Go installation
-        run: go version
-
       - name: Get dependencies
         run: |
           go mod tidy
@@ -59,23 +56,14 @@ jobs:
 
       - name: Format Code
         run: |
-          go fmt ./...
-          GOROOT=$(go env GOROOT) imports-formatter
-          if [[ -n "$(git status --porcelain)" ]]; then
-            echo "Code formatting issues found:"
-            git diff
-            exit 1
-          fi
+          go fmt ./... && GOROOT=$(go env GOROOT) imports-formatter && git status && [[ -z `git status -s` ]]
+          # diff -u <(echo -n) <(gofmt -d -s .)
 
       - name: Check License Header
         uses: apache/skywalking-eyes/header@e1a02359b239bd28de3f6d35fdc870250fa513d5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          mode: check
 
-      - name: Restore Go version after license check
-        uses: actions/setup-go@v5
+      - name: Set Go version again to override skywalking
+        uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go_version }}
 
