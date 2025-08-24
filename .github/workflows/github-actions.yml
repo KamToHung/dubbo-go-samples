@@ -18,7 +18,7 @@ jobs:
       # If you want to matrix build, you can append the following list.
       matrix:
         go_version:
-          - '1.23.0'
+          - '1.23'
         os:
           - ubuntu-latest
           # - macos-latest  # 可选：添加macOS测试
@@ -77,8 +77,14 @@ jobs:
           
           echo "EVENT = ${{ github.event_name }}, BRANCH = $BRANCH"
           
-          # Edit the version
-          go mod edit -replace=dubbo.apache.org/dubbo-go/v3=dubbo.apache.org/dubbo-go/v3@$BRANCH
+          # Check if the branch exists in dubbo-go repository before replacing
+          if git ls-remote --heads https://github.com/apache/dubbo-go.git "$BRANCH" | grep -q "$BRANCH"; then
+            echo "Found branch $BRANCH in dubbo-go repository, using it"
+            go mod edit -replace=dubbo.apache.org/dubbo-go/v3=dubbo.apache.org/dubbo-go/v3@$BRANCH
+          else
+            echo "Branch $BRANCH not found in dubbo-go repository, using default version"
+          fi
+          
           go mod tidy
 
       - name: Integration Test
