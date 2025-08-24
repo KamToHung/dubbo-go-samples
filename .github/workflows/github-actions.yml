@@ -83,5 +83,4 @@ jobs:
 
       - name: Integration Test
         run: |
-          chmod +x ./start_integrate_test.sh
           ./start_integrate_test.sh
