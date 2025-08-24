@@ -18,7 +18,7 @@ jobs:
       # If you want to matrix build, you can append the following list.
       matrix:
         go_version:
-          - '1.23.0'
+          - '1.23'
         os:
           - ubuntu-latest
           # - macos-latest  # 可选：添加macOS测试
@@ -36,8 +36,17 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go_version }}
-          cache: true
-          cache-dependency-path: go.sum
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          # Cache
+          path: ~/go/pkg/mod
+          # Cache key
+          key: ${{ runner.os }}-go-${{ matrix.go_version }}-${{ hashFiles('**/go.sum') }}
+          # An ordered list of keys to use for restoring the cache if no cache hit occurred for key
+          restore-keys: |
+            ${{ runner.os }}-go-${{ matrix.go_version }}-
 
       - name: Verify Go installation
         run: go version
@@ -69,8 +78,6 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go_version }}
-          cache: true
-          cache-dependency-path: go.sum
 
       - name: Check Go version
         run: |
