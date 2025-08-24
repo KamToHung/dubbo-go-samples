@@ -18,7 +18,7 @@ jobs:
       # If you want to matrix build, you can append the following list.
       matrix:
         go_version:
-          - '1.23'
+          - '1.23.0'
         os:
           - ubuntu-latest
           # - macos-latest  # 可选：添加macOS测试

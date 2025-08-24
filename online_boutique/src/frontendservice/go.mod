@@ -1,6 +1,6 @@
 module github.com/apache/dubbo-go-samples/online_boutique_demo/frontend
 
-go 1.23
+go 1.23.0
 
 require (
 	cloud.google.com/go/compute/metadata v0.3.0
