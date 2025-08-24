@@ -77,11 +77,8 @@ jobs:
           
           echo "EVENT = ${{ github.event_name }}, BRANCH = $BRANCH"
           
-          # Edit the version with error handling
-          if ! go mod edit -replace=dubbo.apache.org/dubbo-go/v3=dubbo.apache.org/dubbo-go/v3@$BRANCH; then
-            echo "Warning: Failed to replace dubbo-go version, using default"
-          fi
-          
+          # Edit the version
+          go mod edit -replace=dubbo.apache.org/dubbo-go/v3=dubbo.apache.org/dubbo-go/v3@$BRANCH
           go mod tidy
 
       - name: Integration Test
